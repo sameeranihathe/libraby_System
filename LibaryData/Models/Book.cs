@@ -14,6 +14,6 @@ namespace LibaryData.Models
         public string Author { get; set; }
 
         [Required]
-        public string DeweyIndrx { get; set; }
+        public string DeweyIndex { get; set; }
     }
 }

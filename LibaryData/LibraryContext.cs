@@ -8,17 +8,17 @@ namespace LibaryData
     {
          public LibraryContext(DbContextOptions options) : base(options) { }
 
-        public DbSet<Book> Book { get; set; }
+        public DbSet<Book> Books { get; set; }
         public DbSet<BranchHours> BranchHours { get; set; }
-        public DbSet<Checkout> Checkout { get; set; }
-        public DbSet<CheckoutHistory> CheckoutHistory { get; set; }
-        public DbSet<Hold> Hold { get; set; }
-        public DbSet<LibraryAsset> LibraryAsset { get; set; }
-        public DbSet<LibraryBranch> LibraryBranch { get; set; }
-        public DbSet<LibraryCard> LibraryCard { get; set; }
+        public DbSet<Checkout> Checkouts { get; set; }
+        public DbSet<CheckoutHistory> CheckoutHistories { get; set; }
+        public DbSet<Hold> Holds { get; set; }
+        public DbSet<LibraryAsset> LibraryAssets { get; set; }
+        public DbSet<LibraryBranch> LibraryBranches { get; set; }
+        public DbSet<LibraryCard> LibraryCards { get; set; }
         public DbSet<Status> Status { get; set; }
-        public DbSet<Video> Video { get; set; }
-        public DbSet<Patron> Patron { get; set; }
+        public DbSet<Video> Videos { get; set; }
+        public DbSet<Patron> Patrons { get; set; }
 
     }
 }
