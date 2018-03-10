@@ -15,5 +15,6 @@ namespace LibaryData.Models
 
         [Required]
         public string DeweyIndex { get; set; }
+        
     }
 }
