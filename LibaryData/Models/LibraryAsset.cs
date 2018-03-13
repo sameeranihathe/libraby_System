@@ -13,7 +13,7 @@ namespace LibaryData.Models
         public string Title { get; set; }
 
         [Required]
-        public string Year { get; set; }
+        public int Year { get; set; }
 
         [Required]
         public Status Status { get; set; }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibaryData.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,5 +23,13 @@ namespace Library_Management_System.Models.Catalog
         public Checkout LatestCheckout { get; set; }
         public IEnumerable<CheckoutHistory> CheckoutHistory { get; set; }
         public IEnumerable<AssetHoldModel> CurrentHolds { get; set; }
+
+        
+    }
+
+    public class AssetHoldModel
+    {
+        public string PatronName { get; set; }
+        public string HoldPLaced { get; set; }
     }
 }
