@@ -68,6 +68,14 @@ namespace LibraryServices
                 .Include(h => h.LibraryAsset)
                 .Where(h => h.LibraryAsset.Id ==id);
         }
+        public Checkout GetLatestCheckout(int assetId)
+        {
+            return _context.Checkouts
+                .Where(c => c.libraryAsset.Id == assetId)
+                .OrderByDescending(c=>c.Since)
+                .FirstOrDefault();
+        } 
+        
 
         public void MarkFound(int assetId)
         {
@@ -76,7 +84,14 @@ namespace LibraryServices
 
         public void MarkLost(int assetId)
         {
-            throw new NotImplementedException();
+            var item = _context.LibraryAssets
+                .FirstOrDefault(a => a.Id == assetId);
+
+            _context.Update(item);
+            item.Status = _context.Status
+                .FirstOrDefault(Status => Status.Name == "Lost");
+
+            _context.SaveChanges();
         }
 
         public void PlaceHold(int assetId, int libraryCardId)
