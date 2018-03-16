@@ -10,6 +10,7 @@ namespace LibraryServices
 {
     public class CheckoutService : ICheckout
     {
+        
         private LibraryContext _context;
 
         public CheckoutService(LibraryContext context)
@@ -25,7 +26,12 @@ namespace LibraryServices
 
         public void CheckInItem(int assetId, int libraryCardId)
         {
-            throw new NotImplementedException();
+            var now = DateTime.Now;
+
+            var item = _context.LibraryAssets
+                .FirstOrDefault(a => a.Id == assetId);
+
+            _context.Update(item);
         }
 
         public void CheckOutItem(int assetId, int libraryCardId)
@@ -79,18 +85,60 @@ namespace LibraryServices
 
         public void MarkFound(int assetId)
         {
-            throw new NotImplementedException();
+            var now = DateTime.Now;
+            
+
+            UpdateAssetStatus(assetId, "Available");
+
+            //remove any existing checkouts on the item
+            RemoveExistingCheckouts(assetId);
+
+
+            //close any existing checkout history
+            CloseExistingCheckouts(assetId,now);
+            
+
         }
 
-        public void MarkLost(int assetId)
+        private void UpdateAssetStatus(int assetId, string v)
         {
             var item = _context.LibraryAssets
                 .FirstOrDefault(a => a.Id == assetId);
 
             _context.Update(item);
-            item.Status = _context.Status
-                .FirstOrDefault(Status => Status.Name == "Lost");
 
+            item.Status = _context.Status
+                .FirstOrDefault(Status => Status.Name == "Available");
+        }
+
+        private void CloseExistingCheckouts(int assetId, DateTime now)
+        {
+            var history = _context.CheckoutHistories
+                .FirstOrDefault(h => h.Id == assetId && h.CheckedIn == null);
+
+            if (history != null)
+            {
+                _context.Update(history);
+                history.CheckedIn = now;
+            }
+
+            _context.SaveChanges();
+        }
+
+        private void RemoveExistingCheckouts(int assetId)
+        {
+            var checkout = _context.Checkouts
+                .FirstOrDefault(co => co.libraryAsset.Id == assetId);
+            if (checkout != null)
+            {
+                _context.Remove(checkout);
+            }
+        }
+
+        public void MarkLost(int assetId)
+        {
+            UpdateAssetStatus(assetId, "Lost");
+            
             _context.SaveChanges();
         }
 
