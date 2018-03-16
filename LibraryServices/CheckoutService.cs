@@ -85,6 +85,33 @@ namespace LibraryServices
             var libraryCard = _context.LibraryCards
                 .Include(card => card.Checkouts)
                 .FirstOrDefault(card => card.Id == libraryCardId);
+
+            var now = DateTime.Now;
+            var checkout = new Checkout
+            {
+                libraryAsset = item,
+                LibraryCard = libraryCard,
+                Since = now,
+                Until = GetDefaultCheckoutTime(now)
+
+            };
+            _context.Add(checkout);
+
+            var checkoutHistory = new CheckoutHistory
+            {
+                CheckOut = now,
+                libraryAsset = item,
+                LibraryCard = libraryCard
+            };
+
+            _context.Add(checkoutHistory);
+            _context.SaveChanges();
+
+        }
+
+        private DateTime GetDefaultCheckoutTime(DateTime now)
+        {
+            return now.AddDays(30);
         }
 
         private bool IsCheckedOut(int assetId)
@@ -201,7 +228,18 @@ namespace LibraryServices
 
         public void PlaceHold(int assetId, int libraryCardId)
         {
-            throw new NotImplementedException();
+            var now = DateTime.Now;
+
+            var asset = _context.LibraryAssets
+                .FirstOrDefault(a => a.Id == assetId);
+
+            var card = _context.LibraryCards
+                .FirstOrDefault(c => c.Id == libraryCardId);
+
+            if (asset.Status.Name =="Available")
+            {
+                UpdateAssetStatus(assetId, "On Hold");
+            }
         }
     }
 }
