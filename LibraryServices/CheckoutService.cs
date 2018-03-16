@@ -31,12 +31,69 @@ namespace LibraryServices
             var item = _context.LibraryAssets
                 .FirstOrDefault(a => a.Id == assetId);
 
-            _context.Update(item);
+            
+
+            //remove any existing ckeckouts on the 
+            RemoveExistingCheckouts(assetId);
+
+            //close any existing checkout history
+            CloseExistingCheckouts(assetId, now);
+
+            //look for existing holds on the item
+            var currentHolds = _context.Holds
+                .Include(h => h.LibraryAsset)
+                .Include(h => h.LibraryCard)
+                .Where(h => h.LibraryAsset.Id == assetId);
+
+            //if there are holds, checkout the item to the librarycard with the earlist hold.
+            if (currentHolds.Any())
+            {
+                CheckoutToEarliestHold(assetId, currentHolds);
+            }
+
+            //otherwise, update the item status to available
+            UpdateAssetStatus(assetId, "Available");
+
+            _context.SaveChanges();
+        }
+
+        private void CheckoutToEarliestHold(int assetId, IQueryable<Hold> currentHolds)
+        {
+            var earliestHold = currentHolds
+                .OrderBy(holds => holds.HoldPlaced)
+                .FirstOrDefault();
+
+            var card = earliestHold.LibraryCard;
+
+            _context.Remove(earliestHold);
+            _context.SaveChanges();
+            CheckOutItem(assetId, card.Id);
         }
 
         public void CheckOutItem(int assetId, int libraryCardId)
         {
-            throw new NotImplementedException();
+            if (IsCheckedOut(assetId))
+            {
+                return;
+                //add logic here to handle feedback to user
+            }
+
+            var item = _context.LibraryAssets
+               .FirstOrDefault(a => a.Id == assetId);
+
+            UpdateAssetStatus(assetId, "Checked Out");
+            var libraryCard = _context.LibraryCards
+                .Include(card => card.Checkouts)
+                .FirstOrDefault(card => card.Id == libraryCardId);
+        }
+
+        private bool IsCheckedOut(int assetId)
+        {
+            return _context.Checkouts
+                .Where(co => co.libraryAsset.Id == assetId)
+                .Any();
+
+
         }
 
         public IEnumerable<Checkout> GetAll()
