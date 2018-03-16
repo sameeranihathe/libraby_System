@@ -142,14 +142,31 @@ namespace LibraryServices
                 .Where(h => h.libraryAsset.Id == id);
         }
 
-        public string GetCurrentHoldPatronName(int id)
+        public string GetCurrentHoldPatronName(int holdId)
         {
-            throw new NotImplementedException();
+            var hold = _context.Holds
+                .Include(h => h.LibraryAsset)
+                .Include(h => h.LibraryCard)
+                .FirstOrDefault(h => h.Id == holdId);
+
+            var caedId = hold?.LibraryCard.Id;
+
+            var patron = _context.Patrons
+                .Include(p => p.LibraryCard)
+                .FirstOrDefault(p => p.LibraryCard.Id == caedId);
+
+            return patron?.FirstName + " " + patron?.LastName;
         }
 
-        public DateTime GetCurrentHoldPlaced(int id)
+        public DateTime GetCurrentHoldPlaced(int holdId)
         {
-            throw new NotImplementedException();
+           return
+                _context.Holds
+                 .Include(h => h.LibraryAsset)
+                 .Include(h => h.LibraryCard)
+                 .FirstOrDefault(h => h.Id == holdId)
+                 .HoldPlaced;
+               
         }
 
         public IEnumerable<Hold> GetCurrentHolds(int id)
@@ -240,6 +257,15 @@ namespace LibraryServices
             {
                 UpdateAssetStatus(assetId, "On Hold");
             }
+            var hold = new Hold
+            {
+                HoldPlaced = now,
+                LibraryAsset = asset,
+                LibraryCard = card
+            };
+
+            _context.Add(hold);
+            _context.SaveChanges();
         }
     }
 }
