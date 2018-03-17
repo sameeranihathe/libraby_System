@@ -267,5 +267,32 @@ namespace LibraryServices
             _context.Add(hold);
             _context.SaveChanges();
         }
+
+        public string GetCurrentCheckoutPatron(int assetId)
+        {
+            var checkout = GetCheckoutByAssetId(assetId);
+           if( checkout== null)
+            {
+                return "";
+            };
+            var cardId = checkout.LibraryCard.Id;
+
+            var patron = _context.Patrons
+                .Include(p => p.LibraryCard)
+                .FirstOrDefault(p => p.LibraryCard.Id == cardId);
+
+            return patron.FirstName + " " + patron.LastName;
+        }
+
+        private Checkout GetCheckoutByAssetId(int assetId)
+        {
+            return  _context.Checkouts
+                .Include(co => co.libraryAsset)
+                .Include(co => co.LibraryCard)
+                .FirstOrDefault(co => co.libraryAsset.Id == assetId);
+                
+        }
+
+       
     }
 }
