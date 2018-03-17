@@ -11,10 +11,12 @@ namespace Library_Management_System.Controllers
     public class CatalogController : Controller
     {
         private ILibraryAsset _assets;
+        private ICheckout _checkouts;
 
-        public CatalogController(ILibraryAsset assets)
+        public CatalogController(ILibraryAsset assets, ICheckout checkouts)
         {
             _assets = assets;
+            _checkouts = checkouts;
         }
         public IActionResult Index()
         {
@@ -47,13 +49,16 @@ namespace Library_Management_System.Controllers
             {
                 AssetId = id,
                 Title = asset.Title,
+                Type = _assets.GetType(id),
                 Year = asset.Year,
                 Cost = asset.Cost,
                 Status = asset.Status.Name,
                 ImageUrl = asset.ImageUrl,
                 AuthorOrDirector = _assets.GetAuthorOrDirector(id),
                 CurrentLocation = _assets.GetCurrentLocation(id).Name,
-                DeweyCallNumber = _assets.GetIsbn(id)
+                DeweyCallNumber = _assets.GetDeweyIndex(id),
+                CheckoutHistory = _checkouts.GetCheckoutHistory(id) ,
+
 
 
             };
