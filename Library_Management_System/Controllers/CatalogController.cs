@@ -44,7 +44,12 @@ namespace Library_Management_System.Controllers
         public IActionResult Detail(int id)
         {
             var asset = _assets.GetById(id);
+            var currentHolds = _checkouts.GetCurrentHolds(id)
+                .Select(a => new AssetHoldModel {
+                    HoldPLaced = _checkouts.GetCurrentHoldPlaced(a.Id).ToString("d"),
+                    PatronName = _checkouts.GetCurrentHoldPatronName(a.Id)
 
+                });
             var model = new AssetDetailModel
             {
                 AssetId = id,
@@ -57,8 +62,11 @@ namespace Library_Management_System.Controllers
                 AuthorOrDirector = _assets.GetAuthorOrDirector(id),
                 CurrentLocation = _assets.GetCurrentLocation(id).Name,
                 DeweyCallNumber = _assets.GetDeweyIndex(id),
-                CheckoutHistory = _checkouts.GetCheckoutHistory(id) ,
-
+                CheckoutHistory = _checkouts.GetCheckoutHistory(id),
+                ISBN = _assets.GetIsbn(id),
+                LatestCheckout = _checkouts.GetLatestCheckout(id),
+                PatronName = _checkouts.GetCurrentCheckoutPatron(id),
+                CurrentHolds = currentHolds.
 
 
             };
