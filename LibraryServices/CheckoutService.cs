@@ -201,7 +201,7 @@ namespace LibraryServices
 
         }
 
-        private void UpdateAssetStatus(int assetId, string v)
+        private void UpdateAssetStatus(int assetId, string newStatus)
         {
             var item = _context.LibraryAssets
                 .FirstOrDefault(a => a.Id == assetId);
@@ -209,7 +209,7 @@ namespace LibraryServices
             _context.Update(item);
 
             item.Status = _context.Status
-                .FirstOrDefault(Status => Status.Name == "Available");
+                .FirstOrDefault(Status => Status.Name == newStatus);
         }
 
         private void CloseExistingCheckouts(int assetId, DateTime now)
