@@ -12,6 +12,7 @@ namespace LibaryData
         IEnumerable<Checkout> GetAll();
         IEnumerable<Hold> GetCurrentHolds(int id);
         IEnumerable<CheckoutHistory> GetCheckoutHistory(int id);
+        bool IsCheckedOut(int id);
 
         Checkout GetById(int checkoutId);
         Checkout GetLatestCheckout(int assetId);
