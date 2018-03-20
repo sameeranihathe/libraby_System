@@ -1,21 +1,21 @@
-﻿logo {
+﻿.logo {
     font-family: "Coda";
     font-size: 1.8em;
     font-weight: bold;
 }
 
-.logo > a {
-    color: #ddd;
-    text-decoration: none;
-    transition-duration: 0.5s;
-}
-
-    .logo > a:hover {
-        color: #fff;
-        transition: ease;
+    .logo > a {
+        color: #ddd;
         text-decoration: none;
         transition-duration: 0.5s;
     }
+
+        .logo > a:hover {
+            color: #fff;
+            transition: ease;
+            text-decoration: none;
+            transition-duration: 0.5s;
+        }
 
 .page-content {
     padding: 20px;
@@ -63,7 +63,7 @@
 }
 
 .homeLabel {
-    background-color: rgba(0,0,0, .3);
+    background-color: rgba(0,0,0,0.3);
     padding: 4px;
 }
 
@@ -84,7 +84,7 @@
     }
 
 #patrons {
-    background: url('/images/patron.jpeg') bottom left 15% no-repeat #555;
+    background: url('/images/patron.jpg') bottom left 15% no-repeat #555;
 }
 
 .branchInfo {
