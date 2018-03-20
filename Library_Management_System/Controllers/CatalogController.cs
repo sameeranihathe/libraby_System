@@ -113,6 +113,12 @@ namespace Library_Management_System.Controllers
             return RedirectToAction("Detail", new { id = assetId });
         }
 
+        public IActionResult CheckIn(int id)
+        {
+            _checkouts.CheckInItem(id);
+            return RedirectToAction("Detail", new { id = id });
+        }
+
         public IActionResult MarkFound(int assetId)
         {
             _checkouts.MarkFound(assetId);
