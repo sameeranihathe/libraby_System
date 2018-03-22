@@ -27,13 +27,13 @@ namespace LibraryServices
         {
             return _context.LibraryBranches
                 .Include(b => b.Patrons)
-                .Include(b => b.LibraryAssets)
+                .Include(b => b.LibraryAsset)
                 .FirstOrDefault(p => p.Id == branchId);
         }
 
         public IEnumerable<LibraryBranch> GetAll()
         {
-            return _context.LibraryBranches.Include(a => a.Patrons).Include(a => a.LibraryAssets);
+            return _context.LibraryBranches.Include(a => a.Patrons).Include(a => a.LibraryAsset);
         }
 
         public int GetAssetCount(int branchId)
@@ -44,7 +44,7 @@ namespace LibraryServices
         public IEnumerable<LibraryAsset> GetAssets(int branchId)
         {
             return _context.LibraryBranches.Include(a => a.LibraryAsset)
-                .First(b => b.Id == branchId).LibraryAssets;
+                .First(b => b.Id == branchId).LibraryAsset;
         }
 
         public decimal GetAssetsValue(int branchId)
@@ -78,10 +78,16 @@ namespace LibraryServices
             return _context.LibraryBranches.Include(a => a.Patrons).First(b => b.Id == branchId).Patrons;
         }
 
-        //TODO: Implement 
+         
         public bool IsBranchOpen(int branchId)
         {
-            return true;
+            var currentTimeHour = DateTime.Now.Hour;
+            var currentDayOfWeek = (int)DateTime.Now.DayOfWeek+1;
+            var hours = _context.BranchHours.Where(h => h.Branch.Id == branchId);
+            var dayHours = hours.FirstOrDefault(h => h.DayOfWeek == currentDayOfWeek);
+
+            return currentTimeHour < dayHours.CloseTime && currentTimeHour > dayHours.OpenTime;
+            
         }
 
         IEnumerable<ILibraryBranch> ILibraryBranch.GetAll()
